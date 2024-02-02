@@ -2,6 +2,8 @@
 #♥♦♣♠
 import random
 from time import sleep
+import os
+
 
 class Card:
     def __init__(self,cardNum,suit,color):
@@ -69,6 +71,8 @@ class Player:
 
     def __repr__(self):
         return "Player {name} has {numofcards} cards".format(numofcards = self.numOfCards, name = self.name)
+
+os.system('clear')
 block = """
 |||||__SKITTLES__|||||
         |_____|
