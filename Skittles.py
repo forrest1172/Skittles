@@ -4,7 +4,7 @@ import random
 from time import sleep
 import os
 
-
+roundNum = 1
 class Card:
     def __init__(self,cardNum,suit,color):
         self.cardNum = cardNum
@@ -12,6 +12,15 @@ class Card:
         self.color = color
     def __repr__(self):
         return "This is a {color} {cardNum} of {suit}".format(color=self.color,cardNum=self.cardNum, suit=self.suit)
+class Player:
+    def __init__(self,name,numOfCards,isNPC,cardList):
+        self.name = name
+        self.numOfCards = numOfCards
+        self.isNPC = False
+        self.cardList = cardList
+
+    def __repr__(self):
+        return "Player {name} has {numofcards} cards".format(numofcards = self.numOfCards, name = self.name)
 
 def MakeCards():
     currentNum = 1
@@ -54,24 +63,50 @@ def DealCards():
             player.numOfCards += 1
 
 def WaitForInput():
-    print(list(playerList[1].cardList))
-    playerIn = input("type 'count'/'cards' at anytime to display current card counts for players \n")
+    playerIn = input("type 'count'/'cards' at anytime to display current card counts for players. Press 'ENTER' to continue \n")
     if(playerIn == "cards") or (playerIn == "count"):
         print(list(playerList))
+        WaitForInput()
+    elif(playerIn == ""):
+        PlayRound()
+        roundNum =+ 1
+    elif(playerIn == "quit"):
+        quit()
     else:
         print("Incorrect input")
-        return
+        WaitForInput()
 
-class Player:
-    def __init__(self,name,numOfCards,isNPC,cardList):
-        self.name = name
-        self.numOfCards = numOfCards
-        self.isNPC = False
-        self.cardList = cardList
+def PlayRound():
+    print("round:" + str(roundNum))
+    for player in playerList:
+        print(player.name)
+        myNums = []
+        for card in player.cardList:
+            myNums.append(getattr(card, "cardNum"))
+            ogCards = []
+            dupCards = []
+            for i in myNums:
+                if(i == "Jack"):
+                    i = 11
+                if(i == "Queen"):
+                    i = 12
+                if(i == "King"):
+                    i = 13
+                if(i not in ogCards):
+                    ogCards.append(i)
+                else:
+                    dupCards.append(i)
+        ogCards.sort()
+        dupCards.sort()
+        print("og cards: " + str(ogCards))
+        print("dup cards: " + str(dupCards))
+    #WaitForInput()
 
-    def __repr__(self):
-        return "Player {name} has {numofcards} cards".format(numofcards = self.numOfCards, name = self.name)
 
+
+
+
+#start
 os.system('clear')
 block = """
 |||||__SKITTLES__|||||
@@ -81,7 +116,7 @@ block = """
 print(block)
 playerStart = input("Welcome to the skittles table. Please press 'ENTER' to continue \n")
 
-numOfPlayers = random.randint(4,10)
+numOfPlayers = random.randint(2,4)
 MakeCards()
 playerList = []
 num = 1
@@ -91,6 +126,8 @@ for newPlayer in range(0,numOfPlayers):
     num += 1
 
 playerName = input("Please enter your name. \n")
+
+playerList.append(Player(playerName,0,False,cardList=[]))
 
 print("Welcome " + str(playerName) + " You will be playing with " + (str(numOfPlayers)) + " other players")
 
